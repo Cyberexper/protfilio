@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Cyber's Portfolio</title>
+
+    <!-- Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+   
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+            }
+        }
+    </script>
+
+    <style>
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000021;
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit
+        }
+
+        img {
+            max-width: 100%;
+            display: block
+        }
+
+       
+        #three-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            /* so it never blocks clicks */
+            mix-blend-mode: screen;
+            opacity: 0.12;
+            /* subtle by default */
+        }
+
+        /* main container sits above canvas */
+        .page {
+            position: relative;
+            z-index: 1;
+            min-height: 100%;
+        }
+
+        /* Navbar */
+        header {
+            background: #12123E;
+            position: sticky;
+            top: 0;
+            z-index: 40
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+            padding: 0 20px
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #9c97f1
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px
+        }
+
+        .nav-links li {
+            list-style: none
+        }
+
+        .nav-links a {
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all .18s
+        }
+
+        .nav-links a:hover {
+            background: rgba(156, 151, 241, .08);
+            color: #9c97f1
+        }
+
+        /* Hero (sits above canvas) */
+        .hero {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2
+        }
+
+        .hero-left {
+            flex: 1 1 320px;
+            min-width: 260px
+        }
+
+        .hero-title {
+            font-size: 2.6rem;
+            font-weight: 600
+        }
+
+        .purple {
+            color: #953fe6
+        }
+
+        .tagline {
+            margin-top: 10px;
+            font-size: 2.6rem;
+            font-weight: 600;
+            color: #fff
+        }
+
+        .resume-button {
+            display: inline-block;
+            margin-top: 70px;
+            padding: 12px 24px;
+            background-color: #953fe6;
+            color: #fff;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .resume-button:hover {
+            background-color: #7a32c2;
+            transform: translateY(-2px);
+        }
+
+        #element {
+            display: inline-block;
+            font-size: 2.2rem;
+            color: #A5A5E2;
+            font-weight: 700;
+            margin-left: 6px;
+            white-space: nowrap
+        }
+
+        .hero-right {
+            flex: 1 1 320px;
+            text-align: center
+        }
+
+        .hero-right img {
+            margin-left: 300px;
+            max-width: 200px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .4)
+        }
+
+        hr {
+            border: 0;
+            height: 2px;
+            background: #9c97f1;
+            opacity: .5;
+            max-width: 90%;
+            margin: 60px auto
+        }
+
+        /* Experience (timeline vertical restored) */
+        .experience {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center
+        }
+
+        .experience h1 {
+            font-size: 2rem;
+            margin-bottom: 10px
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin-top: 30px
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            width: 2px;
+            height: 100%;
+            background: #9c97f1
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 60px
+        }
+
+        .timeline-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #000021;
+            padding: 5px;
+            position: absolute;
+            left: -5px;
+            top: 0;
+            object-fit: contain
+        }
+
+        .timeline-title {
+            margin-left: 60px;
+            font-size: 1.2rem;
+            font-weight: 500
+        }
+
+        .timeline-desc {
+            margin-left: 60px;
+            margin-top: 6px;
+            font-size: .95rem;
+            color: #b8b8d9
+        }
+
+        /* Skills */
+        .skills {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center
+        }
+
+        .skills h1 {
+            font-size: 2rem;
+            margin-bottom: 20px
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 18px;
+            padding: 0 20px
+        }
+
+        .skill-card {
+            background: #12123E;
+            padding: 18px;
+            border-radius: 12px;
+            transition: transform .2s
+        }
+
+        .skill-card:hover {
+            transform: translateY(-6px);
+            background: #282864
+        }
+
+        /* Projects grid + tilt (JS handles transforms) */
+        .projects {
+            max-width: 1150px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center
+        }
+
+        .projects h1 {
+            font-size: 2rem;
+            margin-bottom: 20px
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 0 20px
+        }
+
+        .project-card {
+            background: #12123E;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: box-shadow .18s, transform .18s;
+            transform-style: preserve-3d;
+            will-change: transform;
+            cursor: grab;
+            padding-bottom: 10px
+        }
+
+        .project-card img {
+            display: block;
+            width: 100%;
+            height: 150px;
+            object-fit: cover
+        }
+
+        .project-card h3 {
+            padding: 12px 16px 6px;
+            margin: 0;
+            font-size: 1.05rem
+        }
+
+        .project-card p {
+            padding: 0 16px 18px;
+            color: #b8b8d9;
+            font-size: .95rem
+        }
+
+        /* Footer */
+        footer {
+            background: #0A0A29;
+            padding: 40px 20px;
+            color: #b8b8d9;
+            margin-top: 40px
+        }
+
+        .footer-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center
+        }
+
+        .footer-section {
+            min-width: 200px;
+            text-align: left
+        }
+
+        .footer-section h3 {
+            color: #9c97f1;
+            margin-bottom: 8px
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 20px;
+            color: #aab;
+            font-size: .92rem
+        }
+
+       
+        html {
+            scroll-behavior: smooth
+        }
+
+        /* small-screen tweaks */
+        @media(max-width:900px) {
+            .hero-title {
+                font-size: 2.1rem
+            }
+
+            #element {
+                font-size: 1.6rem
+            }
+        }
+
+        @media(max-width:600px) {
+            .project-card img {
+                height: 180px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- three.js canvas -->
+    <canvas id="three-bg" aria-hidden="true"></canvas>
+
+    <div class="page">
+        <!-- NAV -->
+        <header>
+            <nav>
+                <div class="brand">Suman's Portfolio</div>
+                <ul class="nav-links" role="menubar">
+                    <li role="none"><a role="menuitem" href="#" onclick="scrollToTop()">Home</a></li>
+                    <li role="none"><a role="menuitem" href="resume.pdf" download>About</a></li>
+                    <li role="none"><a role="menuitem" href="#" onclick="scrollToBottom()">Services</a></li>
+                    <li role="none"><a role="menuitem" href="projects.html">Projects</a></li>
+                    <li role="none"><a role="menuitem" href="https://wa.me/917318765831">Contact Me</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- HERO -->
+        <main>
+            <section class="hero" id="home">
+                <div class="hero-left">
+                    <h1 class="hero-title">Hey, my name is <span class="purple">Suman</span></h1>
+                    <p class="tagline">And I'm a <span id="element"></span></p>
+                    <a href="resume.pdf" download class="resume-button">Download Resume</a>
+                </div>
+                <div class="hero-right">
+                    <img style="border-radius: 180px; opacity: 0.5; size: 50px;" src="image.png" alt="Developer screenshot / photo">
+                </div>
+            </section>
+
+            <hr>
+
+            <section class="experience" id="about">
+                <h1>Past Experience</h1>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <img class="timeline-icon" src="html.png" alt="HTML icon">
+                        <div class="timeline-title">HTML Developer (2023-2024)</div>
+                        <div class="timeline-desc">Built responsive, semantic sites with SEO and accessibility.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <img class="timeline-icon" src="css.png" alt="CSS icon">
+                        <div class="timeline-title">CSS Developer (2024)</div>
+                        <div class="timeline-desc">Styled modern UIs with Flexbox, Grid, animations.</div>
+                    </div>
+                    <div class="timeline-item">
+                        <img class="timeline-icon" src="js.png" alt="JS icon">
+                        <div class="timeline-title">JavaScript Developer (2024)</div>
+                        <div class="timeline-desc">Created interactive features & API-driven apps.</div>
+                    </div>
+                </div>
+            </section>
+
+            <hr>
+
+
+            <section class="skills" aria-label="Skills" id="services">
+                <h1>My Skills</h1>
+                <div class="skills-grid">
+                    <div class="skill-card">HTML5</div>
+                    <div class="skill-card">CSS3</div>
+                    <div class="skill-card">JavaScript</div>
+                    <div class="skill-card">React</div>
+                    <div class="skill-card">Node.js</div>
+                    <div class="skill-card">Video Editing</div>
+                </div>
+            </section>
+
+            <hr>
+
+
+            <section class="projects" aria-label="Projects" id="projects">
+                <h1>My Projects</h1>
+                <div class="project-grid">
+                    <article class="project-card" tabindex="0">
+                        <img src="prot.jpg" alt="Portfolio layout screenshot">
+                        <h3>Portfolio Layout</h3>
+                        <p>A clean layout example of a modern portfolio.</p>
+                    </article>
+
+                    <article class="project-card" tabindex="0">
+                        <img src="ui.png" alt="Web app UI design">
+                        <h3>Web App UI Design</h3>
+                        <p>UI design inspired by professional dashboards.</p>
+                    </article>
+
+                    <article class="project-card" tabindex="0">
+                        <img src="video.jpg" alt="Video editing project screenshot (After Effects)">
+                        <h3>Video Editing</h3>
+                        <p>A creative video editing project showcasing transitions, effects, and storytelling.</p>
+                    </article>
+                </div>
+            </section>
+
+            <hr>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer id="contact">
+            <div class="footer-wrap">
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Web Dev</a></li>
+                        <li><a href="#">Video Editing</a></li>
+                        <li><a href="#">UI/UX Design</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>Email: <a href="mailto:t3amcyber@gmail.com">t3amcyber@gmail.com</a></p>
+                    <p>Location: India</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Social</h3>
+                    <ul>
+                        <li><a href="https://instagram.com/notcyberatall" target="_blank">Instagram: @notcyberatall</a></li>
+                        <li><a href="https://instagram.com/_w3by" target="_blank">Instagram: @_w3by</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">&copy; <span id="year"></span> Suman's Portfolio | All Rights Reserved</div>
+        </footer>
+    </div>
+
+    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script>
+        // typed.js (kept)
+        new Typed('#element', {
+            strings: ['Web Developer.', 'Video Editor.'],
+            typeSpeed: 55,
+            backSpeed: 30,
+            loop: true
+        });
+
+        // year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Scroll functions
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToBottom() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+
+    <script>
+
+        (function () {
+            const cards = document.querySelectorAll('.project-card');
+
+            function handleMove(e, el) {
+                const rect = el.getBoundingClientRect();
+                const x = (e.clientX ?? (e.touches && e.touches[0].clientX)) - rect.left;
+                const y = (e.clientY ?? (e.touches && e.touches[0].clientY)) - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                const dx = (x - cx) / cx; // -1 .. 1
+                const dy = (y - cy) / cy; // -1 .. 1
+                const tiltX = dy * 8; // max tilt degrees X
+                const tiltY = dx * -8;
+                el.style.transform = `perspective(800px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateZ(6px)`;
+                el.style.boxShadow = `${-tiltY * 2}px ${tiltX * 2}px 30px rgba(0,0,0,0.45)`;
+            }
+
+            function reset(el) {
+                el.style.transform = '';
+                el.style.boxShadow = '';
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => handleMove(e, card));
+                card.addEventListener('touchmove', (e) => handleMove(e, card));
+                card.addEventListener('mouseleave', () => reset(card));
+                card.addEventListener('touchend', () => reset(card));
+               
+                card.addEventListener('focus', () => card.style.transform = 'perspective(800px) translateZ(6px) scale(1.02)');
+                card.addEventListener('blur', () => reset(card));
+            });
+        })();
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        (function () {
+            const canvas = document.getElementById('three-bg');
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0); // fully transparent bg
+
+            const scene = new THREE.Scene();
+
+            
+            const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+            camera.position.set(0, 0, 60);
+
+           
+            const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+            scene.add(ambient);
+            const dir = new THREE.DirectionalLight(0xffffff, 0.3);
+            dir.position.set(10, 10, 10);
+            scene.add(dir);
+
+            
+            const particleCount = 220;
+            const positions = new Float32Array(particleCount * 3);
+            const sizes = new Float32Array(particleCount);
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3 + 0] = (Math.random() - 0.5) * 500; // x
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 300; // y
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 600; // z
+                sizes[i] = 2 + Math.random() * 4;
+            }
+
+            const particleGeometry = new THREE.BufferGeometry();
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+            const particleMaterial = new THREE.PointsMaterial({
+                color: 0x9c97f1,
+                size: 1.6,
+                transparent: true,
+                opacity: 0.9
+            });
+
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            scene.add(particles);
+
+            // Rotating SKILL CUBE with canvas textures
+            function makeFaceCanvas(text, bg, fg) {
+                const size = 512;
+                const c = document.createElement('canvas');
+                c.width = c.height = size;
+                const ctx = c.getContext('2d');
+                // background
+                ctx.fillStyle = bg;
+                ctx.fillRect(0, 0, size, size);
+                // subtle pattern
+                ctx.globalAlpha = 0.06;
+                ctx.fillStyle = "#000000";
+                for (let i = 0; i < 60; i++) {
+                    ctx.fillRect(Math.random() * size, Math.random() * size, 2, 2);
+                }
+                ctx.globalAlpha = 1;
+                // text
+                ctx.fillStyle = fg;
+                ctx.font = 'bold 90px Poppins, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(text, size / 2, size / 2);
+                return new THREE.CanvasTexture(c);
+            }
+
+            const faces = [
+                makeFaceCanvas('HTML', '#ff6b6b', '#fff'),
+                makeFaceCanvas('CSS', '#4d8cff', '#fff'),
+                makeFaceCanvas('JS', '#f0db4f', '#000'),
+                makeFaceCanvas('AE', '#953fe6', '#fff'),
+                makeFaceCanvas('NODE', '#3aa55c', '#fff'),
+                makeFaceCanvas('REACT', '#61dafb', '#000')
+            ];
+
+            const materials = faces.map(tex => new THREE.MeshBasicMaterial({ map: tex }));
+
+            const boxGeo = new THREE.BoxGeometry(20, 20, 20);
+            const cube = new THREE.Mesh(boxGeo, materials);
+            cube.position.set(28, 6, -20);
+            cube.rotation.x = 0.4;
+            cube.rotation.y = 0.6;
+            scene.add(cube);
+
+            let t = 0;
+
+            let mouse = { x: 0, y: 0 };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            }, { passive: true });
+
+
+            function animate() {
+                t += 0.01;
+                particles.rotation.y = t * 0.02;
+                particles.position.x = Math.sin(t * 0.5) * 10;
+
+                cube.rotation.x += 0.008;
+                cube.rotation.y += 0.01;
+                cube.position.y = Math.sin(t * 0.6) * 2 + 6;
+
+
+                camera.position.x += (mouse.x * 15 - camera.position.x) * 0.04;
+                camera.position.y += (mouse.y * 7 - camera.position.y) * 0.04;
+                camera.lookAt(0, 0, 0);
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(animate);
+            }
+            animate();
+
+            
+            function onWindowResize() {
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                renderer.setSize(w, h);
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+            }
+            window.addEventListener('resize', onWindowResize, { passive: true });
+
+            const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+            if (mq.matches) {
+
+                renderer.setAnimationLoop(null);
+                particles.rotation.set(0, 0, 0);
+                cube.rotation.set(0.4, 0.6, 0);
+            }
+        })();
+    </script>
+</body>
+
+</html>
